@@ -1,3 +1,137 @@
+namespace TransactionBuilder
+{
+    /// <summary>
+    /// Main program class for building a transaction interactively.
+    /// </summary>
+    class Program
+    {
+        /// <summary>
+        /// Entry point of the program.
+        /// </summary>
+        /// <param name="args">Command-line arguments.</param>
+        static void Main(string[] args)
+        {
+            Console.Clear();
+            var tx = new Transaction();
+
+            // 1. Setting Version number
+            Console.Clear();
+            Console.WriteLine("Transaction Builder");
+            Console.WriteLine("-------------------");
+            Console.WriteLine();
+
+            Console.Write("Version (1): ");
+            string version = Console.ReadLine();
+            tx.Version = int.Parse(version);
+
+            // 2. Gathering Inputs
+            Console.Clear();
+            Console.WriteLine("Transaction Builder");
+            Console.WriteLine("-------------------");
+            Console.WriteLine();
+            Console.WriteLine(tx.Serialize());
+            Console.WriteLine();
+
+            Console.WriteLine("Inputs (txid vout):");
+
+            int i = 0;
+            while (true)
+            {
+                Console.Write($"  {i}: ");
+                string reference = Console.ReadLine();
+                if (string.IsNullOrEmpty(reference))
+                    break;
+
+                string[] parts = reference.Split(' ');
+                string txid = parts[0];
+                int vout = int.Parse(parts[1]);
+
+                tx.AddInput(txid, vout);
+                i++;
+            }
+
+            // 3. Gathering Outputs
+            Console.Clear();
+            Console.WriteLine("Transaction Builder");
+            Console.WriteLine("-------------------");
+            Console.WriteLine();
+            Console.WriteLine(tx.Serialize());
+            Console.WriteLine();
+
+            Console.WriteLine("Outputs (value address):");
+
+            i = 0;
+            while (true)
+            {
+                Console.Write($"  {i}: ");
+                string create = Console.ReadLine();
+                if (string.IsNullOrEmpty(create))
+                    break;
+
+                string[] parts = create.Split(' ');
+                long value = long.Parse(parts[0]);
+                string address = parts[1];
+
+                tx.AddOutput(value, address);
+                i++;
+            }
+
+            // 4. Setting Locktime
+            Console.Clear();
+            Console.WriteLine("Transaction Builder");
+            Console.WriteLine("-------------------");
+            Console.WriteLine();
+            Console.WriteLine(tx.Serialize());
+            Console.WriteLine();
+
+            Console.Write("Locktime (0): ");
+            string locktime = Console.ReadLine();
+            tx.Locktime = int.Parse(locktime);
+
+            // 5. Signing Inputs
+            Console.Clear();
+            Console.WriteLine("Transaction Builder");
+            Console.WriteLine("-------------------");
+            Console.WriteLine();
+            Console.WriteLine(tx.Serialize());
+            Console.WriteLine();
+
+            Console.WriteLine("Sign Inputs (privatekey, lock):");
+            for (i = 0; i < tx.Inputs.Count; i++)
+            {
+                Console.Write($"  {i}: ");
+                string details = Console.ReadLine();
+                if (string.IsNullOrEmpty(details))
+                    break;
+
+                string[] parts = details.Split(' ');
+                string privateKey = parts[0];
+                string placeholder = parts[1];
+
+                try
+                {
+                    tx.Sign(i, privateKey, placeholder);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error signing input {i}: {ex.Message}");
+                    i--;
+                }
+            }
+
+            // Display the completed transaction data
+            Console.Clear();
+            Console.WriteLine("Transaction Builder");
+            Console.WriteLine("-------------------");
+            Console.WriteLine();
+            Console.WriteLine(tx.Serialize());
+            Console.WriteLine("Your transaction, Ma'am.");
+        }
+
+    }
+}
+
+
 public static class Utils                                  // (under development) 
 {
     public static string ReverseBytes(string hex)
