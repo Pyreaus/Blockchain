@@ -12,10 +12,7 @@ namespace TransactionBuilder
         
         public static string DecHex(int dec) => dec.ToString("X");
         
-        public static string Field(BigInteger field, int size = 4)
-        {
-            return field.ToString(16).PadLeft(size * 2, '0');
-        }
+        public static string Field(BigInteger field, int size = 4) => field.ToString(16).PadLeft(size * 2, '0');
         
         public static string VarInt(uint i)
         {
