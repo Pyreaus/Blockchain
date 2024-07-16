@@ -1,4 +1,4 @@
-public static class Utils  // (under development) 
+public static class Utils                                  // (under development) 
 {
     public static string ReverseBytes(string hex)
     {
@@ -7,7 +7,9 @@ public static class Utils  // (under development)
         bytes.Reverse();
         return string.Join("", bytes);
     }
+    
     public static string DecHex(int dec) => dec.ToString("X");
+    
     public static string Field(BigInteger field, int size = 4)
     {
         return field.ToString(16).PadLeft(size * 2, '0');
@@ -21,13 +23,16 @@ public static class Utils  // (under development)
         else if (i <= 4294967295) return "FE" + Field(bi, 4);
         else return "FF" + Field(bi, 8);
     }
+    
     public static BigInteger Base58ToInt(string base58Val) => new BigInteger(Base58CheckEncoding.DecodePlain(base58Val));
+    
     public static string DecodeBase58(string base58Val)
     {
         byte[] decoded = Base58CheckEncoding.DecodePlain(base58Val);
         string hex = BitConverter.ToString(decoded).Replace("-", "");
         return hex;
     }
+    
     public static string PrivateToPublic(string privateKey)
     {
         ECPrivateKeyParameters privateKeyParams = new(new BigInteger(privateKey, 16), GetDomainParameters());
@@ -38,6 +43,7 @@ public static class Utils  // (under development)
         string prefix = yCoord.Mod(new BigInteger("2")).Equals(BigInteger.Zero) ? "02" : "03";
         return prefix + publicKey;
     }
+    
     public static string Hash256(string hex)
     {
         byte[] bytes = new byte[hex.Length / 2];
@@ -54,6 +60,7 @@ public static class Utils  // (under development)
 
         return BitConverter.ToString(hash2).Replace("-", "");
     }
+    
     private static ECDomainParameters GetDomainParameters()
     {   // Using secp256k1 curve parameters
         X9ECParameters curveParams = SecNamedCurves.GetByName("secp256k1");
